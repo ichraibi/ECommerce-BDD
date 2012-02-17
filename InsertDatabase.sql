@@ -633,3 +633,135 @@ INSERT INTO [ECommerce].[dbo].[CATALOGUE]
            ('Rentrée Scolaire'
            ,'Soyez prêt et équipé pour cette nouvelle année scolaire')
 GO
+---- ADRESSE---------------------
+INSERT INTO [ECommerce].[dbo].[ADRESSE]
+           ([IDCLIENT]
+           ,[NOM]
+           ,[NUM]
+           ,[RUE]
+           ,[CP]
+           ,[VILLE])
+     VALUES
+           ((select id from client where NOM ='Léauté')
+           ,'Adresse Personnelle'
+           ,71
+           ,'Pelouse de douet'
+           ,'33000'
+           ,'Bordeaux')
+GO
+
+INSERT INTO [ECommerce].[dbo].[ADRESSE]
+           ([IDCLIENT]
+           ,[NOM]
+           ,[NUM]
+           ,[RUE]
+           ,[CP]
+           ,[VILLE])
+     VALUES
+           ((select id from client where NOM ='Léauté')
+           ,'Addresse Professionnelle'
+           ,12
+           ,'Bordeaux Lax'
+           ,'33000'
+           ,'Bordeaux')
+GO
+INSERT INTO [ECommerce].[dbo].[ADRESSE]
+           ([IDCLIENT]
+           ,[NOM]
+           ,[NUM]
+           ,[RUE]
+           ,[CP]
+           ,[VILLE])
+     VALUES
+           ((select id from client where NOM ='Chraibi')
+           ,'Ma Maison'
+           ,36
+           ,'Mérignac'
+           ,'33000'
+           ,'Bordeaux')
+GO
+INSERT INTO [ECommerce].[dbo].[ADRESSE]
+           ([IDCLIENT]
+           ,[NOM]
+           ,[NUM]
+           ,[RUE]
+           ,[CP]
+           ,[VILLE])
+     VALUES
+           ((select id from client where NOM ='Chraibi')
+           ,'Chez mes parents'
+           ,20
+           ,'Rue de Nintendo'
+           ,'44100'
+           ,'Nantes')
+GO
+INSERT INTO [ECommerce].[dbo].[ADRESSE]
+           ([IDCLIENT]
+           ,[NOM]
+           ,[NUM]
+           ,[RUE]
+           ,[CP]
+           ,[VILLE])
+     VALUES
+           ((select id from client where NOM ='Léponge')
+           ,'Maison'
+           ,2
+           ,'Rue du Commerce'
+           ,'78995'
+           ,'PARIS')
+GO
+
+------COMPTE BANCAIRE-----------
+INSERT INTO [ECommerce].[dbo].[COMPTE_BANCAIRE]
+           ([IDCLIENT]
+           ,[NOM_COMPTE]
+           ,[NUM_COMPTE]
+           ,[DATE_EXP]
+           ,[CLE])
+     VALUES
+           ((select id from client where NOM ='Léauté')
+           ,'Leaute Alexis'
+           ,1234567891
+           ,'20131001'
+           ,'02')
+GO
+
+INSERT INTO [ECommerce].[dbo].[COMPTE_BANCAIRE]
+           ([IDCLIENT]
+           ,[NOM_COMPTE]
+           ,[NUM_COMPTE]
+           ,[DATE_EXP]
+           ,[CLE])
+     VALUES
+           ((select id from client where NOM ='Léauté')
+           ,'Entreprise Alexis'
+           ,0987654321
+           ,'20121201'
+           ,'03')
+GO
+INSERT INTO [ECommerce].[dbo].[COMPTE_BANCAIRE]
+           ([IDCLIENT]
+           ,[NOM_COMPTE]
+           ,[NUM_COMPTE]
+           ,[DATE_EXP]
+           ,[CLE])
+     VALUES
+           ((select id from client where NOM ='Chraibi')
+           ,'Chraibi Kaadoud Ikram'
+           ,666666666
+           ,'20130101'
+           ,'04')
+GO
+INSERT INTO [ECommerce].[dbo].[COMPTE_BANCAIRE]
+           ([IDCLIENT]
+           ,[NOM_COMPTE]
+           ,[NUM_COMPTE]
+           ,[DATE_EXP]
+           ,[CLE])
+     VALUES
+           ((select id from client where NOM ='Léponge')
+           ,'Léponge Bob'
+           ,999999999
+           ,'20120601'
+           ,'05')
+GO
