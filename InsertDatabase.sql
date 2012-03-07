@@ -1,3 +1,6 @@
+USE [ECommerce] 
+GO
+
 --Client
 INSERT INTO [ECommerce].[dbo].[CLIENT]
            ([NOM]
@@ -604,7 +607,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            )
 GO
 
-------TVA
+------TVA-------------------------------
 INSERT INTO [ECommerce].[dbo].[TVA]
            ([TAUX],[DATE_VAL])
      VALUES
@@ -623,7 +626,7 @@ INSERT INTO [ECommerce].[dbo].[CATALOGUE]
            ,[DESCRIPTION])
      VALUES
            ('Catalogue de Noel'
-           ,'Pour Noel faites vous plaisir !! promotion hors normes')
+           ,'Pour Noel faites vous plaisir !! Offrez du reve !')
 GO
 
 INSERT INTO [ECommerce].[dbo].[CATALOGUE]
@@ -765,3 +768,64 @@ INSERT INTO [ECommerce].[dbo].[COMPTE_BANCAIRE]
            ,'20120601'
            ,'05')
 GO
+
+---ELEMENT CATALOGUE----------------------------------
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (1
+           ,1)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (1
+           ,2)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (1
+           ,3)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (1
+           ,4)
+GO
+
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (2
+           ,5)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (2
+           ,6)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (2
+           ,7)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (2
+           ,8)
+GO
+
+
