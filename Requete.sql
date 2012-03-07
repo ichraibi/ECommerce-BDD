@@ -1,6 +1,14 @@
 --consultation du catalogue-----------------
 
-
+create function displayCatalogue( @nomCat varchar(50) ) 
+returns void
+as
+begin
+	print(select produits.* 
+	from elementcatalogue inner join catalogue on elementcatalogue.idcatalogue = catalogue.id
+						  inner join produits on elementcatalogue.idproduit = produits.id
+	where catalogue.nom = @nomCat)
+end
 
 
 --sélection d'un ou plusieurs produits, en un ou plusieurs exemplaires, dans un "panier électronique"---------

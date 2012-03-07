@@ -1,5 +1,3 @@
---create database ECommerce;
-
 USE [ECommerce] 
 GO
 
