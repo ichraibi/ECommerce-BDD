@@ -1,0 +1,28 @@
+Reste à faire et questions :
+- elementpanier ressemble à lignecde et ligne facture -> alors pourquoi ne pas renommer la table en  lignePanier
+- ce qui reste à faire :
+
+ce qui a été fait :
+- toutes les tables statiques ont leur insert :
+	- CLIENT
+	- ADRESSE
+	- COMPTE_BANCAIRE
+	- CATEGORIE
+	- PRODUIT
+	- TVA
+	- CATALOGUE
+
+ANALYSE Panier :
+	- Est créer lors du premier ajout d'un produit dans mon panier
+	- Nouveau panier à chaque connexion 
+	
+ANALYSE ElementPAnier :
+	- à chaque ajout de elementPanier, recalcul du prix du panier
+
+Validation Panier :
+	- Creation Commande et delete panier
+	- toutes les elements panier d'un même panier vont devenir les lignesCDE d'une même commande
+
+Validation Paiement :
+	- Création d'une facture 
+	- toutes les lignesCDE d'une même Commande vont devenir les lignesFAC d'une même facture
