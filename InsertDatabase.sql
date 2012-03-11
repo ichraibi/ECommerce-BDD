@@ -3,34 +3,46 @@ GO
 
 --Client
 INSERT INTO [ECommerce].[dbo].[CLIENT]
-           ([NOM]
+           ([LOGIN]
+           ,[PWD]
+           ,[NOM]
            ,[PRENOM]
            ,[DATE_NAISSANCE]
            ,[EMAIL])
      VALUES
-           ('Léauté',
+           ('Alex',
+           'alex33',
+           'Léauté',
            'Alexis',
            '19890601',
            'lex33@free.fr')
 GO
 INSERT INTO [ECommerce].[dbo].[CLIENT]
-           ([NOM]
+           ([LOGIN]
+           ,[PWD]
+           ,[NOM]
            ,[PRENOM]
            ,[DATE_NAISSANCE]
            ,[EMAIL])
      VALUES
-           ('Chraibi',
+           ('Ikram',
+           'krikri',
+           'Chraibi',
            'Ikram',
            '19881123',
            'ichraibi@epsi.fr')
 GO
 INSERT INTO [ECommerce].[dbo].[CLIENT]
-           ([NOM]
+           ([LOGIN]
+           ,[PWD]
+           ,[NOM]
            ,[PRENOM]
            ,[DATE_NAISSANCE]
            ,[EMAIL])
      VALUES
-           ('Léponge',
+           ('bobby',
+           'sponge',
+           'Léponge',
            'Bob',
            '19881122',
            'bob@leponge.fr')
@@ -636,6 +648,14 @@ INSERT INTO [ECommerce].[dbo].[CATALOGUE]
            ('Rentrée Scolaire'
            ,'Soyez prêt et équipé pour cette nouvelle année scolaire')
 GO
+
+INSERT INTO [ECommerce].[dbo].[CATALOGUE]
+           ([NOM]
+           ,[DESCRIPTION])
+     VALUES
+           ('Tous les produits'
+           ,'Catalogue de tous les produit')
+GO
 ---- ADRESSE---------------------
 INSERT INTO [ECommerce].[dbo].[ADRESSE]
            ([IDCLIENT]
@@ -724,7 +744,7 @@ INSERT INTO [ECommerce].[dbo].[COMPTE_BANCAIRE]
      VALUES
            ((select id from client where NOM ='Léauté')
            ,'Leaute Alexis'
-           ,1234567891
+           ,'1234567891'
            ,'20131001'
            ,'02')
 GO
@@ -738,7 +758,7 @@ INSERT INTO [ECommerce].[dbo].[COMPTE_BANCAIRE]
      VALUES
            ((select id from client where NOM ='Léauté')
            ,'Entreprise Alexis'
-           ,0987654321
+           ,'0987654321'
            ,'20121201'
            ,'03')
 GO
@@ -751,7 +771,7 @@ INSERT INTO [ECommerce].[dbo].[COMPTE_BANCAIRE]
      VALUES
            ((select id from client where NOM ='Chraibi')
            ,'Chraibi Kaadoud Ikram'
-           ,666666666
+           ,'666666666'
            ,'20130101'
            ,'04')
 GO
@@ -764,7 +784,7 @@ INSERT INTO [ECommerce].[dbo].[COMPTE_BANCAIRE]
      VALUES
            ((select id from client where NOM ='Léponge')
            ,'Léponge Bob'
-           ,999999999
+           ,'999999999'
            ,'20120601'
            ,'05')
 GO
@@ -826,6 +846,174 @@ INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
      VALUES
            (2
            ,8)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,1)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,2)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,3)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,4)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,5)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,6)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,7)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,8)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,9)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,10)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,11)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,12)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,13)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,14)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,15)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,16)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,17)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,18)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,19)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,20)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,21)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,22)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,23)
+GO
+INSERT INTO [ECommerce].[dbo].[ELEMENTCATALOGUE]
+           ([IDCATALOGUE]
+           ,[IDPRODUIT])
+     VALUES
+           (3
+           ,24)
 GO
 
 
