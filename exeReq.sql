@@ -9,7 +9,7 @@ execute dbo.addProductToBasket 1,1,2
 
 --passage en caisse avec vidage du panier et calcul du montant à régler---------------------
 
-
+execute ValidateBasket 1 
 
 -- gestion des coordonnées bancaires et postales des clients--------------
 

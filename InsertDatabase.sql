@@ -621,15 +621,15 @@ GO
 
 ------TVA-------------------------------
 INSERT INTO [ECommerce].[dbo].[TVA]
-           ([TAUX],[DATE_VAL])
+           ([TAUX], STATUT)
      VALUES
-           (0.196 ,'19990101')
+           (0.196,1)
 GO
 
 INSERT INTO [ECommerce].[dbo].[TVA]
-           ([TAUX],[DATE_VAL])
+           ([TAUX],STATUT)
      VALUES
-           (0.005 ,'19990202')
+           (0.050,0)
 GO
 
 ------------CATALOGUE ----------

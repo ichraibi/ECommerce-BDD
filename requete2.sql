@@ -1,12 +1,5 @@
-/*select elementpanier.idproduit, produits.ref, produits.Nom, elementpanier.quantite, elementpanier.prix 
-from elementpanier , panier, produits
-where panier.id = elementpanier.idpanier 
-and panier.idclient = 1
-and produits.id = elementpanier.idproduit
-*/
 
---execute ValidateBasket 1
-alter procedure ValidateBasket( @idClient varchar(50) ) 
+create procedure ValidateBasket( @idClient varchar(50) ) 
 as
 begin
 
@@ -22,6 +15,7 @@ begin
 	declare @TotalHT float
 	declare @TotalTVA float
 	declare @TotalTTC float
+	declare @idTVA float
 	declare @tauxTVA float
 
 	INSERT INTO [ECommerce].[dbo].[COMMANDE](IDCLIENT,DATE_CDE)
@@ -29,7 +23,7 @@ begin
 	
 	set @idCommande = (select @@IDENTITY as id)
 	
-	set @tauxTVA = 0.196-- faire un select de tva
+	
 	
 	DECLARE c_elemtpanier CURSOR FOR 
 								select elementpanier.idproduit, produits.ref, produits.Nom,produits.prix, elementpanier.quantite, elementpanier.prix 
@@ -39,7 +33,8 @@ begin
 								and produits.id = elementpanier.idproduit
 													
 	
-	
+	set @tauxTVA =(select taux from TVA where STATUT='Actif') --0.196
+	set @idTVA = (select ID from TVA where STATUT='Actif')
 	open c_elemtpanier
 	fetch c_elemtpanier into @idProduit, @RefProduit, @NomProduit,@PrixProduit, @Quantite, @PriXElementPanier
 	
@@ -49,12 +44,13 @@ begin
 	begin
 		if(@currentIdPanier != @idProduit)
 		begin
+		
 			set @currentIdPanier = @idProduit
 			set @TotalCommande += @PriXElementPanier
 			print ' -> ' + @RefProduit + ' :'++ @NomProduit + ' ' + convert(varchar(20),@Quantite) + ' ' + convert(varchar(20),@PriXElementPanier) + '€'
 			
-			Insert into ECommerce.dbo.LIGNE_CDE (IDCOMMANDE, IDPRODUIT,QUANTITE, PRIX_U, TOTALHT, TOTALTVA, TOTALTTC)
-			VALUES(@idCommande,@idProduit,@Quantite,@PrixProduit,@PriXElementPanier, @PriXElementPanier*@tauxTVA, @PriXElementPanier+@PriXElementPanier*@tauxTVA)
+			Insert into ECommerce.dbo.LIGNE_CDE (IDCOMMANDE, IDPRODUIT,IDTVA,QUANTITE, PRIX_U, TOTALHT, TOTALTVA, TOTALTTC)
+			VALUES(@idCommande,@idProduit,@IdTVA,@Quantite,@PrixProduit,@PriXElementPanier, @PriXElementPanier*@tauxTVA, @PriXElementPanier+@PriXElementPanier*@tauxTVA)
 		end	
 				
 		fetch c_elemtpanier into @idProduit, @RefProduit, @NomProduit,@PrixProduit, @Quantite, @PriXElementPanier
@@ -93,6 +89,8 @@ begin
 end
 
 
+
+--execute ValidateBasket 1
 
 
 
