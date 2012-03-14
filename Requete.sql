@@ -35,7 +35,44 @@ begin
 	deallocate c_cat
 end
 
---sélection d'un ou plusieurs produits, en un ou plusieurs exemplaires, dans un "panier électronique"---------
+--affichage des categories et sous categories
+create procedure displayCategories( @idCatMere int, @niveau int) 
+as
+begin
+	declare @nextLevel int = @niveau + 1
+	if (@idCatMere is NULL)
+	begin
+		DECLARE c_cat CURSOR local FOR select id, nom from categorie where idmere is NULL
+	end
+	else
+	begin 
+		DECLARE c_cat CURSOR local FOR select id, nom from categorie where idmere = @idCatMere
+	end
+
+	declare @idCat int
+	declare @nomCategorie varchar(200)
+
+	open c_cat
+	fetch c_cat into @idCat, @nomCategorie
+
+	while @@FETCH_STATUS = 0
+	begin
+		declare @decalage varchar (20) = ''
+		declare @i int = 0
+		while @i < @niveau
+		begin
+			set @decalage += '  '
+			set @i += 1
+		end
+		print @decalage + @nomCategorie
+		execute dbo.displayCategories @idCat, @nextLevel
+		fetch c_cat into @idCat, @nomCategorie
+	end
+	close c_cat
+	deallocate c_cat
+end
+
+--sélection d'un produits, en un ou plusieurs exemplaires, dans un "panier électronique"---------
 
 create procedure addProductToBasket(@idClient int, @idProduit int, @quantite int)
 as
@@ -45,14 +82,15 @@ begin
 	begin
 		INSERT INTO [ECommerce].[dbo].[PANIER] ([IDCLIENT])
 		VALUES (@idClient)
-		set @idBasket = (select id from PANIER where idclient = @idClient)
+		set @idBasket = (select @@IDENTITY as ID)
 	end
 	
 	declare @idElemPanier int =  (select id from ELEMENTPANIER where IDPANIER = @idBasket and IDPRODUIT = @idProduit)
 	if (@idElemPanier is NULL)
 	begin
 		INSERT INTO [ECommerce].[dbo].[ELEMENTPANIER] ([IDPANIER],[IDPRODUIT],[QUANTITE] ,[PRIX])
-		VALUES (@idBasket , @idProduit, @quantite, (select prix from PRODUITS where ID = @idProduit) * @quantite)
+		VALUES (@idBasket , @idProduit, @quantite, ((select prix from PRODUITS where ID = @idProduit) * @quantite))
+		set @idElemPanier = (select @@IDENTITY as ID)
 	end
 	else
 	begin
@@ -69,6 +107,29 @@ begin
 	set @prixPanier += ((select prix from PRODUITS where ID = @idProduit) * @quantite)
 	update PANIER set PRIX = @prixPanier
 					where ID = @idBasket
+end
+
+--modification de la quantité d'un produits dans un "panier électronique"---------
+create procedure ModifyBasketQuantityProduct(@idPanier int, @idProduit int, @quantite int)
+as
+begin
+	declare @idElemPanier int =  (select id from ELEMENTPANIER where IDPANIER = @idPanier and IDPRODUIT = @idProduit)
+	declare @oldQuantite int = (select quantite from ELEMENTPANIER where ID = @idElemPanier)
+	if( @quantite = 0)
+	begin
+		delete from ELEMENTPANIER where ID = @idElemPanier
+	end
+	else
+	begin
+		update ELEMENTPANIER set QUANTITE = @quantite,
+								 PRIX = ((select prix from PRODUITS where ID = @idProduit) * @quantite)
+							where ID = @idElemPanier
+	end
+	
+	declare @prixPanier float = (select PRIX from PANIER where ID = @idPanier)
+	set @prixPanier += ((select prix from PRODUITS where ID = @idProduit) * (@quantite - @oldQuantite))
+	update PANIER set PRIX = @prixPanier
+					where ID = @idPanier
 end
 
 --passage en caisse avec vidage du panier et calcul du montant à régler---------------------
