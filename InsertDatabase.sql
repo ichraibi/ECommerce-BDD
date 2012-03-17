@@ -1,6 +1,18 @@
 USE [ECommerce] 
 GO
 
+------TVA-------------------------------
+INSERT INTO [ECommerce].[dbo].[TVA]
+           ([TAUX], STATUT)
+     VALUES
+           (0.196,1)
+GO
+
+INSERT INTO [ECommerce].[dbo].[TVA]
+           ([TAUX],STATUT)
+     VALUES
+           (0.050,0)
+GO
 --Client
 INSERT INTO [ECommerce].[dbo].[CLIENT]
            ([LOGIN]
@@ -165,6 +177,7 @@ GO
 --Produit
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -173,6 +186,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'Processeur'),
+           (select id from TVA where statut =1),
            'Intel Core i7 2600k',
            'Processeur intel 4 cores',
            '01232546655',
@@ -184,6 +198,7 @@ GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -192,6 +207,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'Processeur'),
+            (select id from TVA where statut =1),
            'AMD FX 8150',
            'Processeur AMD 8 cores',
            '01568546655',
@@ -203,6 +219,7 @@ GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -211,6 +228,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'Carte Mère'),
+            (select id from TVA where statut =1),
            'ASUS p8p67 pro',
            'Carte mère ASUS socket 1155',
            '98765546655',
@@ -222,6 +240,7 @@ GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -230,6 +249,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'Carte Mère'),
+            (select id from TVA where statut =1),
            'MSI Big Bang Z68',
            'Carte mère MSI socket 1155',
            '98457546655',
@@ -241,6 +261,7 @@ GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -249,6 +270,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'Carte Graphique'),
+            (select id from TVA where statut =1),
            'AMD HD 7970',
            'Carte mère AMD Haut De Gamme',
            '98451126655',
@@ -260,6 +282,7 @@ GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -268,6 +291,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'Carte Graphique'),
+            (select id from TVA where statut =1),
            'nVidia GTX 580',
            'Carte mère nVidia Haut De Gamme',
            '98450226655',
@@ -279,6 +303,7 @@ GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -287,6 +312,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'Mémoire'),
+            (select id from TVA where statut =1),
            'Crucial 2*4Go',
            'Mémoire Crucial 8GO',
            '98450224585',
@@ -298,6 +324,7 @@ GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -306,6 +333,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'Mémoire'),
+            (select id from TVA where statut =1),
            'Corsair Vengance 2*4Go',
            'Mémoire Corsair 8GO',
            '9555022445',
@@ -317,6 +345,7 @@ GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -325,6 +354,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'Boitier et Alimentation'),
+            (select id from TVA where statut =1),
            'Corsair AX750',
            'Alimentation Corsair 750W',
            '9554578045',
@@ -336,6 +366,7 @@ GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -344,6 +375,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'Boitier et Alimentation'),
+            (select id from TVA where statut =1),
            'Cooler Master HAF-X',
            'Boitier Corsair Cooler Master HAF-X',
            '9511445045',
@@ -355,6 +387,7 @@ GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -363,6 +396,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'Imprimante'),
+            (select id from TVA where statut =1),
            'Epson Stylus SX3250',
            'Imprimante multifonctions epson',
            '95189532215',
@@ -374,6 +408,7 @@ GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ([IDCATEGORIE]
+           ,[IDTVA]           
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -382,6 +417,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'Imprimante'),
+            (select id from TVA where statut =1),
            'Lexmark x1180',
            'Imprimante multifonctions lexmark',
            '9518922335',
@@ -393,6 +429,7 @@ GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -401,6 +438,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'Clavier et Souris'),
+            (select id from TVA where statut =1),
            'Logitech G15',
            'Clavier gamer logitech',
            '951891515',
@@ -412,6 +450,7 @@ GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -420,6 +459,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'Clavier et Souris'),
+            (select id from TVA where statut =1),
            'Razer DeathAdder',
            'Souris gamer razer',
            '95158961515',
@@ -431,6 +471,7 @@ GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -439,6 +480,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'Audio'),
+            (select id from TVA where statut =1),
            'Logitech z5500',
            'Kit 5.1 logitech',
            '9515895500',
@@ -450,6 +492,7 @@ GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -458,6 +501,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'Audio'),
+            (select id from TVA where statut =1),
            'Altec Lansing 2.1',
            'Kit 2.1 Altec Lansing',
            '9515821220',
@@ -469,6 +513,7 @@ GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -477,6 +522,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'Moniteur'),
+            (select id from TVA where statut =1),
            'LG 2342P',
            'Moniteur LG 23" 3D',
            '9517845550',
@@ -488,6 +534,7 @@ GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -496,6 +543,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'Moniteur'),
+            (select id from TVA where statut =1),
            'Samsung S24A450BW',
            'Moniteur Samsung 24"',
            '951244500',
@@ -506,7 +554,8 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
 GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
-           ([IDCATEGORIE]
+            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -515,6 +564,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'Manette de jeu'),
+            (select id from TVA where statut =1),
            'Microsoft Xbox 360 Filaire',
            'Manette de jeu PC/Xbox 360 Microsoft',
            '9512360990',
@@ -526,6 +576,7 @@ GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -534,6 +585,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'Manette de jeu'),
+            (select id from TVA where statut =1),
            'Microsoft Xbox 360 sans fil',
            'Manette de jeu PC/Xbox 360 Microsoft',
            '9512364550',
@@ -545,6 +597,7 @@ GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -553,6 +606,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'PC de bureau'),
+            (select id from TVA where statut =1),
            'AlienWare x51',
            'PC de bureau Gamer AlienWare',
            '9512312212',
@@ -564,6 +618,7 @@ GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -572,6 +627,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'PC de bureau'),
+            (select id from TVA where statut =1),
            'ASUS ET2410INTS',
            'PC de bureau tout en un Asus',
            '951298566',
@@ -582,7 +638,8 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
 GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
-           ([IDCATEGORIE]
+            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -591,6 +648,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'PC Portable'),
+            (select id from TVA where statut =1),
            'AlienWare m11x',
            'PC portable AlienWare 11"',
            '9512112233',
@@ -601,7 +659,8 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
 GO
 
 INSERT INTO [ECommerce].[dbo].[PRODUITS]
-           ([IDCATEGORIE]
+            ([IDCATEGORIE]
+           ,[IDTVA]
            ,[NOM]
            ,[DESCRIPTION]
            ,[CODE_BARRE]
@@ -610,6 +669,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            ,[REF])
      VALUES
            ((SELECT ID FROM CATEGORIE WHERE NOM = 'PC Portable'),
+            (select id from TVA where statut =1),
            'ASUS G53SX',
            'PC portable ASUS 15"',
            '9515588883',
@@ -619,18 +679,7 @@ INSERT INTO [ECommerce].[dbo].[PRODUITS]
            )
 GO
 
-------TVA-------------------------------
-INSERT INTO [ECommerce].[dbo].[TVA]
-           ([TAUX], STATUT)
-     VALUES
-           (0.196,1)
-GO
 
-INSERT INTO [ECommerce].[dbo].[TVA]
-           ([TAUX],STATUT)
-     VALUES
-           (0.050,0)
-GO
 
 ------------CATALOGUE ----------
 INSERT INTO [ECommerce].[dbo].[CATALOGUE]

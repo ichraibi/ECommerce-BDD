@@ -30,7 +30,7 @@ begin
 			print char(10) + @nomCategorie + ' :'
 		end
 		declare @tauxTVA float = (select taux from TVA where id = @idTva)
-		@prix *= ( 1 + @tauxTVA)
+		set @prix *= ( 1 + @tauxTVA)
 		print '   - ' + @nom + ' ' + @description + ' ' + convert(varchar(10),@prix) + '€'
 		fetch c_cat into @idCat, @nomCategorie, @nom, @description, @idTva, @prix
 	end
@@ -136,13 +136,13 @@ begin
 	end
 	
 	declare @prixPanier float = (select PRIX from PANIER where ID = @idPanier)
-	set @prixPanier += ((select prix from PRODUITS where ID = @idProduit) * (@quantite - @oldQuantite))
+	set @prixPanier += ((select prix from PRODUITS where ID = @idProduit)*(1+@tauxTVA) * (@quantite - @oldQuantite))
 	update PANIER set PRIX = @prixPanier
 					where ID = @idPanier
 end
 
 --passage en caisse avec vidage du panier et calcul du montant à régler---------------------
-create procedure ValidateBasket( @idClient varchar(50) ) 
+alter procedure ValidateBasket( @idClient varchar(50) ) 
 as
 begin
 
@@ -173,14 +173,12 @@ begin
 								select elementpanier.idproduit, produits.ref, produits.Nom, produits.idtva,produits.prix, elementpanier.quantite 
 								from elementpanier , panier, produits
 								where panier.id = elementpanier.idpanier 
-								and panier.idclient = 1
+								and panier.idclient = @idClient
 								and produits.id = elementpanier.idproduit
 													
 
 	open c_elemtpanier
 	fetch c_elemtpanier into @idProduit, @RefProduit, @NomProduit, @idTVA,@PrixProduit, @Quantite
-	
-	print  'Les elements du panier :'
 	
 	while @@FETCH_STATUS = 0
 	begin
@@ -188,17 +186,16 @@ begin
 		begin
 			set @tauxTVA =(select taux from TVA where id = @idTVA) --0.196
 			set @currentIdPanier = @idProduit
-			declare @totalHT float = @PrixProduit * @Quantite
-			declare @totalTTC float = @totalHT * (1 + @tauxTVA)
+			set @TotalHT  = @PrixProduit * @Quantite
+			set @TotalTTC  = @totalHT * (1 + @tauxTVA)
 			set @TotalCommandeHT += @totalHT
 			set @TotalCommandeTTC += @totalTTC
-			print ' -> ' + @RefProduit + ' :'++ @NomProduit + ' ' + convert(varchar(20),@Quantite) + ' ' + convert(varchar(20),@totalTTC) + '€'
 			
 			Insert into ECommerce.dbo.LIGNE_CDE (IDCOMMANDE, IDPRODUIT,IDTVA,QUANTITE, PRIX_U, TOTALHT, TOTALTVA, TOTALTTC)
 			VALUES(@idCommande,@idProduit,@idTVA,@Quantite,@PrixProduit,@totalHT, @totalTTC - @totalHT, @totalTTC)
 		end	
 				
-		fetch c_elemtpanier into @idProduit, @RefProduit, @NomProduit, @idTVA,@PrixProduit, @Quantite,
+		fetch c_elemtpanier into @idProduit, @RefProduit, @NomProduit, @idTVA,@PrixProduit, @Quantite
 	end
 	close c_elemtpanier
 	deallocate c_elemtpanier
@@ -212,80 +209,61 @@ begin
 	Delete from elementpanier where idpanier=(select id from panier where idclient=@idClient)
 	update panier set prix =0 where idclient=@idclient
 	
-	/*optionnel pour l'affichage*/
-	declare @nom varchar(200)
-	declare @qte int
-	declare @prix float
-	
-	DECLARE c_cde CURSOR FOR select produits.nom, ligne_cde.quantite, ligne_cde.totalttc
-							  from ligne_cde inner join produits on ligne_cde.idproduit = produits.id
-							  where ligne_cde.idcommande = @idCommande
-	
-	open c_cde
-	fetch c_cde into @nom, @quantite, @prix
-		print ' Voici la commande de :'+@idclient
-		while @@FETCH_STATUS = 0
-		begin
-			print '   - ' + @nom + ', quantité : ' + convert(varchar(10),@qte) + ', total ' + convert(varchar(10),@prix) +'€' 
-			fetch c_cde into @nom, @qte, @prix
-		end
-	close c_cde
-	deallocate c_cde
+	execute dbo.displayCommande @idCommande
 end
-
 
 
 -- gestion des coordonnées postales des clients--------------
 
---ajout
-create procedure addAdressToClient(@idClient int, @nomAddr varchar(50), @numRue int, @rue varchar(100), @cp varchar(5), @ville varchar(50))
-as
-begin
-	insert into ADRESSE (IDCLIENT,NOM,NUM,RUE,CP,VILLE)
-	values(@idClient, @nomAddr, @numRue, @rue,@cp, @ville)
-end
+	--ajout
+	create procedure addAdressToClient(@idClient int, @nomAddr varchar(50), @numRue int, @rue varchar(100), @cp varchar(5), @ville varchar(50))
+	as
+	begin
+		insert into ADRESSE (IDCLIENT,NOM,NUM,RUE,CP,VILLE)
+		values(@idClient, @nomAddr, @numRue, @rue,@cp, @ville)
+	end
 
---modification
-create procedure modifyAdress(@idAddresse int, @nomAddr varchar(50), @numRue int, @rue varchar(100), @cp varchar(5), @ville varchar(50))
-as
-begin
-	update ADRESSE set NOM = @nomAddr, NUM = @numRue, RUE = @rue, CP = @cp, VILLE = @ville
-				   where ID = @idAddresse
-end
+	--modification
+	create procedure modifyAdress(@idAddresse int, @nomAddr varchar(50), @numRue int, @rue varchar(100), @cp varchar(5), @ville varchar(50))
+	as
+	begin
+		update ADRESSE set NOM = @nomAddr, NUM = @numRue, RUE = @rue, CP = @cp, VILLE = @ville
+					   where ID = @idAddresse
+	end
 
---suppression
-create procedure deleteAdress(@idAdresse int)
-as
-begin
-	delete from ADRESSE
-	where ID = @idAdresse
-end
+	--suppression
+	create procedure deleteAdress(@idAdresse int)
+	as
+	begin
+		delete from ADRESSE
+		where ID = @idAdresse
+	end
 
 -- gestion des coordonnées bancaires
 
---ajout
-create procedure addCBToClient(@idClient int, @nomCpt varchar(50), @numCpt varchar(20), @dateExp date, @cle int)
-as
-begin
-	insert into COMPTE_BANCAIRE(IDCLIENT,NOM_COMPTE,NUM_COMPTE,DATE_EXP,CLE)
-	values(@idClient, @nomcpt, @numCpt, @dateExp,@cle)
-end
+	--ajout
+	create procedure addCBToClient(@idClient int, @nomCpt varchar(50), @numCpt varchar(20), @dateExp date, @cle int)
+	as
+	begin
+		insert into COMPTE_BANCAIRE(IDCLIENT,NOM_COMPTE,NUM_COMPTE,DATE_EXP,CLE)
+		values(@idClient, @nomcpt, @numCpt, @dateExp,@cle)
+	end
 
---modification
-create procedure modifyCB(@idCB int, @nomCpt varchar(50), @numCpt varchar(20), @dateExp date, @cle int)
-as
-begin
-	update COMPTE_BANCAIRE set NOM_COMPTE = @nomCpt, NUM_COMPTE = @numCpt, DATE_EXP = @dateExp, CLE = @cle
-				   where ID = @idCB
-end
+	--modification
+	create procedure modifyCB(@idCB int, @nomCpt varchar(50), @numCpt varchar(20), @dateExp date, @cle int)
+	as
+	begin
+		update COMPTE_BANCAIRE set NOM_COMPTE = @nomCpt, NUM_COMPTE = @numCpt, DATE_EXP = @dateExp, CLE = @cle
+					   where ID = @idCB
+	end
 
---suppression
-create procedure deleteCB(@idCB int)
-as
-begin
-	delete from COMPTE_BANCAIRE
-	where ID = @idCB
-end
+	--suppression
+	create procedure deleteCB(@idCB int)
+	as
+	begin
+		delete from COMPTE_BANCAIRE
+		where ID = @idCB
+	end
 
 -- gestion et authentification des connexions sur le site------------------
 create procedure checkLogin(@login varchar(50), @pwd varchar(50))
