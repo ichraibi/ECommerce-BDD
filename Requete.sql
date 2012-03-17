@@ -3,7 +3,7 @@
 create procedure displayCatalogue( @nomCat varchar(50) ) 
 as
 begin
-	DECLARE c_cat CURSOR FOR select produits.idcategorie, categorie.nom , produits.nom, produits.description, produits.prix
+	DECLARE c_cat CURSOR FOR select produits.idcategorie, categorie.nom , produits.nom, produits.description, produits.idtva, produits.prix
 							  from elementcatalogue inner join catalogue on elementcatalogue.idcatalogue = catalogue.id
 							  inner join produits on elementcatalogue.idproduit = produits.id
 							  inner join categorie on categorie.id = produits.idcategorie
@@ -13,11 +13,12 @@ begin
 	declare @nomCategorie varchar(200)
 	declare @nom varchar(200)
 	declare @description varchar(200)
+	declare @idTva int
 	declare @prix float
 	declare @currentCatId int = -1
 	
 	open c_cat
-	fetch c_cat into @idCat, @nomCategorie, @nom, @description, @prix
+	fetch c_cat into @idCat, @nomCategorie, @nom, @description, @idTva, @prix
 	
 	print @nomCat + ' :'
 	
@@ -28,8 +29,10 @@ begin
 			set @currentCatId = @idCat
 			print char(10) + @nomCategorie + ' :'
 		end
+		declare @tauxTVA float = (select taux from TVA where id = @idTva)
+		@prix *= ( 1 + @tauxTVA)
 		print '   - ' + @nom + ' ' + @description + ' ' + convert(varchar(10),@prix) + '€'
-		fetch c_cat into @idCat, @nomCategorie, @nom, @description, @prix
+		fetch c_cat into @idCat, @nomCategorie, @nom, @description, @idTva, @prix
 	end
 	close c_cat
 	deallocate c_cat
@@ -77,6 +80,9 @@ end
 create procedure addProductToBasket(@idClient int, @idProduit int, @quantite int)
 as
 begin
+	declare @idTVA int = (select idtva from produits where id = @idproduit)
+	declare @tauxTVA float = (select taux from tva where id = @idTVA)
+	declare @prix float = (select prix from PRODUITS where ID = @idProduit) * @quantite * (1 + @tauxTVA)
 	declare @idBasket int = (select id from PANIER where idclient = @idClient) 
 	if (@idBasket is NULL)
 	begin
@@ -89,13 +95,13 @@ begin
 	if (@idElemPanier is NULL)
 	begin
 		INSERT INTO [ECommerce].[dbo].[ELEMENTPANIER] ([IDPANIER],[IDPRODUIT],[QUANTITE] ,[PRIX])
-		VALUES (@idBasket , @idProduit, @quantite, ((select prix from PRODUITS where ID = @idProduit) * @quantite))
+		VALUES (@idBasket , @idProduit, @quantite, @prix )
 		set @idElemPanier = (select @@IDENTITY as ID)
 	end
 	else
 	begin
 		update ELEMENTPANIER set QUANTITE = (select QUANTITE from ELEMENTPANIER where ID = @idElemPanier) + @quantite,
-								 PRIX = (select PRIX from ELEMENTPANIER where ID = @idElemPanier) + ((select prix from PRODUITS where ID = @idProduit) * @quantite)
+								 PRIX = (select PRIX from ELEMENTPANIER where ID = @idElemPanier) + @prix
 							where ID = @idElemPanier
 	end
 	
@@ -104,7 +110,7 @@ begin
 	begin
 		set @prixPanier = 0.0;
 	end
-	set @prixPanier += ((select prix from PRODUITS where ID = @idProduit) * @quantite)
+	set @prixPanier += @prix
 	update PANIER set PRIX = @prixPanier
 					where ID = @idBasket
 end
@@ -113,6 +119,9 @@ end
 create procedure ModifyBasketQuantityProduct(@idPanier int, @idProduit int, @quantite int)
 as
 begin
+	declare @idTVA int = (select idtva from produits where id = @idproduit)
+	declare @tauxTVA float = (select taux from tva where id = @idTVA)
+	declare @prix float = (select prix from PRODUITS where ID = @idProduit) * @quantite * (1 + @tauxTVA)
 	declare @idElemPanier int =  (select id from ELEMENTPANIER where IDPANIER = @idPanier and IDPRODUIT = @idProduit)
 	declare @oldQuantite int = (select quantite from ELEMENTPANIER where ID = @idElemPanier)
 	if( @quantite = 0)
@@ -122,7 +131,7 @@ begin
 	else
 	begin
 		update ELEMENTPANIER set QUANTITE = @quantite,
-								 PRIX = ((select prix from PRODUITS where ID = @idProduit) * @quantite)
+								 PRIX = @prix
 							where ID = @idElemPanier
 	end
 	
@@ -145,7 +154,8 @@ begin
 	declare @PriXElementPanier float
 	declare @PrixProduit float
 	declare @currentIdPanier int = -1
-	declare @TotalCommande float =0
+	declare @TotalCommandeHT float =0
+	declare @TotalCommandeTTC float =0
 	declare @TotalHT float
 	declare @TotalTVA float
 	declare @TotalTTC float
@@ -160,17 +170,15 @@ begin
 	
 	
 	DECLARE c_elemtpanier CURSOR FOR 
-								select elementpanier.idproduit, produits.ref, produits.Nom,produits.prix, elementpanier.quantite, elementpanier.prix 
+								select elementpanier.idproduit, produits.ref, produits.Nom, produits.idtva,produits.prix, elementpanier.quantite 
 								from elementpanier , panier, produits
 								where panier.id = elementpanier.idpanier 
 								and panier.idclient = 1
 								and produits.id = elementpanier.idproduit
 													
-	
-	set @tauxTVA =(select taux from TVA where STATUT='Actif') --0.196
-	set @idTVA = (select ID from TVA where STATUT='Actif')
+
 	open c_elemtpanier
-	fetch c_elemtpanier into @idProduit, @RefProduit, @NomProduit,@PrixProduit, @Quantite, @PriXElementPanier
+	fetch c_elemtpanier into @idProduit, @RefProduit, @NomProduit, @idTVA,@PrixProduit, @Quantite
 	
 	print  'Les elements du panier :'
 	
@@ -178,24 +186,27 @@ begin
 	begin
 		if(@currentIdPanier != @idProduit)
 		begin
-		
+			set @tauxTVA =(select taux from TVA where id = @idTVA) --0.196
 			set @currentIdPanier = @idProduit
-			set @TotalCommande += @PriXElementPanier
-			print ' -> ' + @RefProduit + ' :'++ @NomProduit + ' ' + convert(varchar(20),@Quantite) + ' ' + convert(varchar(20),@PriXElementPanier) + '€'
+			declare @totalHT float = @PrixProduit * @Quantite
+			declare @totalTTC float = @totalHT * (1 + @tauxTVA)
+			set @TotalCommandeHT += @totalHT
+			set @TotalCommandeTTC += @totalTTC
+			print ' -> ' + @RefProduit + ' :'++ @NomProduit + ' ' + convert(varchar(20),@Quantite) + ' ' + convert(varchar(20),@totalTTC) + '€'
 			
 			Insert into ECommerce.dbo.LIGNE_CDE (IDCOMMANDE, IDPRODUIT,IDTVA,QUANTITE, PRIX_U, TOTALHT, TOTALTVA, TOTALTTC)
-			VALUES(@idCommande,@idProduit,@IdTVA,@Quantite,@PrixProduit,@PriXElementPanier, @PriXElementPanier*@tauxTVA, @PriXElementPanier+@PriXElementPanier*@tauxTVA)
+			VALUES(@idCommande,@idProduit,@idTVA,@Quantite,@PrixProduit,@totalHT, @totalTTC - @totalHT, @totalTTC)
 		end	
 				
-		fetch c_elemtpanier into @idProduit, @RefProduit, @NomProduit,@PrixProduit, @Quantite, @PriXElementPanier
+		fetch c_elemtpanier into @idProduit, @RefProduit, @NomProduit, @idTVA,@PrixProduit, @Quantite,
 	end
 	close c_elemtpanier
 	deallocate c_elemtpanier
 	
 	UPDATE [ECommerce].[dbo].[COMMANDE]
-	 SET [TOTALHT] = @TotalCommande
-		  ,[TOTALTVA] = @TotalCommande*@tauxTVA
-		  ,[TOTALTTC] = @TotalCommande+@TotalCommande*@tauxTVA
+	 SET [TOTALHT] = @TotalCommandeHT
+		  ,[TOTALTVA] = @TotalCommandeTTC - @TotalCommandeHT
+		  ,[TOTALTTC] = @TotalCommandeTTC
 	 WHERE [ID] = @idCommande
 	 
 	Delete from elementpanier where idpanier=(select id from panier where idclient=@idClient)
